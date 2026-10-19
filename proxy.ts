@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isUnauthenticatedError } from "./lib/supabase/auth";
 import { getSupabaseConfig } from "./lib/supabase/config";
 
 export async function proxy(request: NextRequest) {
@@ -29,7 +30,7 @@ export async function proxy(request: NextRequest) {
     error,
   } = await supabase.auth.getUser();
 
-  if (!user && (!error || error.name === "AuthSessionMissingError")) {
+  if (!user && isUnauthenticatedError(error)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

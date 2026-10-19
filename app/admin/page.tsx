@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { isUnauthenticatedError } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./logout-button";
 
@@ -7,31 +8,11 @@ export const instant = false;
 export default async function AdminPage() {
   const supabase = await createClient();
   const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-
-  if (sessionError) {
-    return (
-      <main className="mx-auto max-w-xl px-4 py-10">
-        <h1 className="text-3xl font-bold tracking-tight">Officer dashboard</h1>
-        <p role="alert" className="mt-4 text-red-700">
-          Unable to read your login session: {sessionError.message}
-        </p>
-      </main>
-    );
-  }
-
-  if (!session) {
-    redirect("/login");
-  }
-
-  const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
-  if (error) {
+  if (error && !isUnauthenticatedError(error)) {
     return (
       <main className="mx-auto max-w-xl px-4 py-10">
         <h1 className="text-3xl font-bold tracking-tight">Officer dashboard</h1>
