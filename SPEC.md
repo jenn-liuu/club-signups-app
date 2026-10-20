@@ -7,6 +7,8 @@ track attendance. Used by one club, mostly on phones.
 - Public event page with sign-up form (name, email)
 - Officer login (Supabase Auth), create/delete events
 - Officer view of signups per event, with attended checkbox
+- Officer accounts are provisioned by an administrator with the trusted
+  `app_metadata.role` claim set to `officer`; public account creation is disabled.
 
 ## Data
 - events(id, owner_id, title, date, location, description)
@@ -14,7 +16,7 @@ track attendance. Used by one club, mostly on phones.
 
 ## Rules
 - RLS on every table. Anyone can read events and insert signups.
-  Only the event owner can read/update signups or modify events.
+  Only an officer who owns an event can read/update its signups or modify it.
 - No duplicate sign-ups (same email + event)
 - Phone first. Show every error to the user.
 

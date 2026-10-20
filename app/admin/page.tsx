@@ -28,6 +28,24 @@ export default async function AdminPage() {
     redirect("/login");
   }
 
+  if (user.app_metadata.role !== "officer") {
+    return (
+      <main className="mx-auto max-w-xl px-4 py-10">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Officer dashboard
+            </h1>
+            <p role="alert" className="mt-4 text-red-700">
+              This account is not authorized to manage club events.
+            </p>
+          </div>
+          <LogoutButton />
+        </div>
+      </main>
+    );
+  }
+
   const { data: events, error: eventsError } = await supabase
     .from("events")
     .select(

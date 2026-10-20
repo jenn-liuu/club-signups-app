@@ -6,7 +6,7 @@ export default function LoginPage() {
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
         <h1 className="text-3xl font-bold tracking-tight">Officer login</h1>
         <p className="mt-2 text-gray-600">
-          Sign in or create an officer account to manage club events.
+          Sign in with your provisioned officer account to manage club events.
         </p>
         <LoginForm />
       </section>
