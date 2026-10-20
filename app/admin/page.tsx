@@ -15,9 +15,9 @@ export default async function AdminPage() {
 
   if (error && !isUnauthenticatedError(error)) {
     return (
-      <main className="mx-auto max-w-xl px-4 py-10">
-        <h1 className="text-3xl font-bold tracking-tight">Officer dashboard</h1>
-        <p role="alert" className="mt-4 text-red-700">
+      <main className="page-shell">
+        <h1 className="page-title">Officer dashboard</h1>
+        <p role="alert" className="state-card state-card--error page-spacer">
           Unable to verify your login: {error.message}
         </p>
       </main>
@@ -38,20 +38,22 @@ export default async function AdminPage() {
 
   if (eventsError) {
     return (
-      <main className="mx-auto max-w-xl px-4 py-10">
-        <div className="flex items-start justify-between gap-4">
+      <main className="page-shell">
+        <div className="topbar">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="page-title">
               Officer dashboard
             </h1>
-            <p className="mt-3 text-gray-600">
+            <p className="account-note">
               Signed in as{" "}
-              <span className="font-medium text-gray-900">{user.email}</span>
+              <span className="account-email">{user.email}</span>
             </p>
           </div>
-          <LogoutButton />
+          <div className="logout-area">
+            <LogoutButton />
+          </div>
         </div>
-        <p role="alert" className="mt-6 text-red-700">
+        <p role="alert" className="state-card state-card--error page-spacer">
           Unable to load your events: {eventsError.message}
         </p>
       </main>
@@ -59,17 +61,19 @@ export default async function AdminPage() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-4 py-10">
-      <div className="flex items-start justify-between gap-4">
+    <main className="page-shell">
+      <div className="topbar">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="page-title">
             Officer dashboard
           </h1>
-          <p className="mt-3 text-gray-600">
-            Signed in as <span className="font-medium text-gray-900">{user.email}</span>
+          <p className="account-note">
+            Signed in as <span className="account-email">{user.email}</span>
           </p>
         </div>
-        <LogoutButton />
+        <div className="logout-area">
+          <LogoutButton />
+        </div>
       </div>
       <AdminEvents initialEvents={events as AdminEvent[]} />
     </main>

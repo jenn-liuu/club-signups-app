@@ -6,6 +6,21 @@ const eventDateFormatter = new Intl.DateTimeFormat("en", {
   month: "long",
   day: "numeric",
   year: "numeric",
+});
+
+const eventDayFormatter = new Intl.DateTimeFormat("en", {
+  day: "numeric",
+});
+
+const eventMonthFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+});
+
+const eventWeekdayFormatter = new Intl.DateTimeFormat("en", {
+  weekday: "short",
+});
+
+const eventTimeFormatter = new Intl.DateTimeFormat("en", {
   hour: "numeric",
   minute: "2-digit",
 });
@@ -45,67 +60,74 @@ export default async function Home() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-2xl px-4 py-8 sm:py-12">
-      <header className="mb-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">
-          Club community
-        </p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-gray-950">
-          Club events
-        </h1>
-        <p className="mt-3 text-gray-600">
-          Find your next event and save your spot.
+    <main className="page-shell">
+      <header className="page-header home-header">
+        <p className="eyebrow">Club calendar</p>
+        <h1 className="page-title home-page-title">Upcoming events</h1>
+        <p className="home-intro">
+          Find an event, check the details, and sign up.
         </p>
       </header>
 
       <section aria-labelledby="upcoming-events-heading">
-        <h2
-          id="upcoming-events-heading"
-          className="mb-4 text-xl font-semibold text-gray-900"
-        >
-          Upcoming events
+        <h2 id="upcoming-events-heading" className="home-section-heading">
+          Dates &amp; details
         </h2>
 
         {loadError ? (
-          <p
-            role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-800"
-          >
+          <p role="alert" className="state-card state-card--error">
             {loadError}
           </p>
         ) : events?.length ? (
-          <ul className="space-y-4">
-            {events.map((event) => (
-              <li key={event.id}>
-                <Link
-                  href={`/events/${event.id}`}
-                  className="block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-                >
-                  <h3 className="text-xl font-bold tracking-tight text-gray-950">
-                    {event.title}
-                  </h3>
-                  <p className="mt-2 text-gray-700">
-                    {eventDateFormatter.format(new Date(event.date))}
-                  </p>
-                  {event.location && (
-                    <p className="mt-1 text-gray-600">{event.location}</p>
-                  )}
-                  {event.description && (
-                    <p className="mt-3 line-clamp-2 text-gray-600">
-                      {event.description}
-                    </p>
-                  )}
-                  <span className="mt-4 inline-block font-semibold text-blue-700">
-                    View event & sign up <span aria-hidden="true">→</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
+          <ul className="home-event-list">
+            {events.map((event) => {
+              const eventDate = new Date(event.date);
+
+              return (
+                <li key={event.id}>
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="home-event-link"
+                    aria-label={`${event.title}, ${eventDateFormatter.format(eventDate)}${event.location ? `, ${event.location}` : ""}. Event details and sign-up`}
+                  >
+                    <time
+                      className="home-date"
+                      dateTime={event.date}
+                      aria-hidden="true"
+                    >
+                      <span className="home-date-weekday">
+                        {eventWeekdayFormatter.format(eventDate)}
+                      </span>
+                      <span className="home-date-day">
+                        {eventDayFormatter.format(eventDate)}
+                      </span>
+                      <span className="home-date-month">
+                        {eventMonthFormatter.format(eventDate)}
+                      </span>
+                    </time>
+                    <span className="home-event-copy">
+                      <span className="home-event-title">{event.title}</span>
+                      <span className="home-event-details">
+                        {eventTimeFormatter.format(eventDate)}
+                        {event.location && <> · {event.location}</>}
+                      </span>
+                      {event.description && (
+                        <span className="home-event-description">
+                          {event.description}
+                        </span>
+                      )}
+                      <span className="home-event-action">
+                        Event details &amp; sign-up{" "}
+                        <span aria-hidden="true">→</span>
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         ) : (
-          <p className="rounded-xl border border-gray-200 bg-white p-5 text-gray-600">
-            There are no upcoming events right now. Please check back soon.
-          </p>
+          <p className="state-card">No events yet. Check back later.</p>
         )}
       </section>
     </main>

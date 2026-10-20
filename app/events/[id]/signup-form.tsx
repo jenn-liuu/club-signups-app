@@ -62,9 +62,9 @@ export default function SignupForm({ eventId }: SignupFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="form-stack">
       <div>
-        <label htmlFor="signup-name" className="mb-1 block text-sm font-medium">
+        <label htmlFor="signup-name" className="field-label">
           Name
         </label>
         <input
@@ -75,14 +75,14 @@ export default function SignupForm({ eventId }: SignupFormProps) {
           required
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-3 text-base"
+          className="field-input"
         />
       </div>
 
       <div>
         <label
           htmlFor="signup-email"
-          className="mb-1 block text-sm font-medium"
+          className="field-label"
         >
           Email
         </label>
@@ -94,17 +94,17 @@ export default function SignupForm({ eventId }: SignupFormProps) {
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-3 text-base"
+          className="field-input"
         />
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="feedback-error">
           {error}
         </p>
       )}
       {message && (
-        <p role="status" className="text-sm text-green-800">
+        <p role="status" className="feedback-success">
           {message}
         </p>
       )}
@@ -112,7 +112,7 @@ export default function SignupForm({ eventId }: SignupFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-lg bg-blue-700 px-4 py-3 font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+        className="primary-button"
       >
         {isSubmitting ? "Signing you up..." : "Sign up for this event"}
       </button>

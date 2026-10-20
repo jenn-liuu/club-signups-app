@@ -173,12 +173,12 @@ export default function AdminEvents({
   }
 
   return (
-    <div className="mt-8 space-y-8">
-      <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold">Create event</h2>
-        <form onSubmit={handleCreateEvent} className="mt-4 space-y-4">
+    <div className="admin-stack">
+      <section className="panel">
+        <h2 className="panel-heading">Create event</h2>
+        <form onSubmit={handleCreateEvent} className="form-stack">
           <div>
-            <label htmlFor="event-title" className="mb-1 block text-sm font-medium">
+            <label htmlFor="event-title" className="field-label">
               Title
             </label>
             <input
@@ -187,11 +187,11 @@ export default function AdminEvents({
               required
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5"
+              className="field-input"
             />
           </div>
           <div>
-            <label htmlFor="event-date" className="mb-1 block text-sm font-medium">
+            <label htmlFor="event-date" className="field-label">
               Date
             </label>
             <input
@@ -201,13 +201,13 @@ export default function AdminEvents({
               required
               value={date}
               onChange={(event) => setDate(event.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5"
+              className="field-input"
             />
           </div>
           <div>
             <label
               htmlFor="event-location"
-              className="mb-1 block text-sm font-medium"
+              className="field-label"
             >
               Location
             </label>
@@ -216,13 +216,13 @@ export default function AdminEvents({
               name="location"
               value={location}
               onChange={(event) => setLocation(event.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5"
+              className="field-input"
             />
           </div>
           <div>
             <label
               htmlFor="event-description"
-              className="mb-1 block text-sm font-medium"
+              className="field-label"
             >
               Description
             </label>
@@ -232,55 +232,52 @@ export default function AdminEvents({
               rows={3}
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5"
+              className="field-input"
             />
           </div>
           {createError && (
-            <p role="alert" className="text-sm text-red-700">
+            <p role="alert" className="feedback-error">
               Unable to create event: {createError}
             </p>
           )}
           <button
             type="submit"
             disabled={isCreating}
-            className="w-full rounded-lg bg-blue-700 px-4 py-3 font-semibold text-white disabled:opacity-60"
+            className="primary-button"
           >
-            Create event
+            {isCreating ? "Creating event..." : "Create event"}
           </button>
         </form>
       </section>
 
       <section aria-labelledby="my-events-heading">
-        <h2 id="my-events-heading" className="mb-4 text-lg font-semibold">
+        <h2 id="my-events-heading" className="section-title">
           My events
         </h2>
         {actionError && (
-          <p role="alert" className="mb-4 text-sm text-red-700">
+          <p role="alert" className="state-card state-card--error">
             {actionError}
           </p>
         )}
         {events.length === 0 ? (
-          <p className="text-gray-600">You have no events yet.</p>
+          <p className="state-card">No events yet. Create one above.</p>
         ) : (
-          <ul className="space-y-4">
+          <ul className="event-list">
             {events.map((event) => (
-              <li
-                key={event.id}
-                className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <h3 className="text-xl font-bold tracking-tight">
+              <li key={event.id} className="event-card admin-event">
+                <div className="admin-event-heading">
+                  <div className="admin-event-content">
+                    <h3 className="event-title">
                       {event.title}
                     </h3>
-                    <p className="mt-2 text-gray-700">
+                    <p className="event-meta">
                       {new Date(event.date).toLocaleDateString()}
                     </p>
                     {event.location && (
-                      <p className="mt-1 text-gray-600">{event.location}</p>
+                      <p className="event-meta">{event.location}</p>
                     )}
                     {event.description && (
-                      <p className="mt-3 whitespace-pre-wrap text-gray-700">
+                      <p className="event-description">
                         {event.description}
                       </p>
                     )}
@@ -288,32 +285,29 @@ export default function AdminEvents({
                   <button
                     type="button"
                     onClick={() => handleDeleteEvent(event)}
-                    className="shrink-0 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium"
+                    className="secondary-button"
                   >
                     Delete event
                   </button>
                 </div>
 
-                <div className="mt-5 border-t border-gray-200 pt-4">
-                  <h4 className="font-semibold">
+                <div className="signup-section">
+                  <h4 className="signup-heading">
                     Sign-ups ({event.signups.length})
                   </h4>
                   {event.signups.length === 0 ? (
-                    <p className="mt-2 text-sm text-gray-600">No sign-ups yet.</p>
+                    <p className="event-meta">No sign-ups yet.</p>
                   ) : (
-                    <ul className="mt-3 space-y-3">
+                    <ul className="signup-list">
                       {event.signups.map((signup) => (
-                        <li
-                          key={signup.id}
-                          className="flex flex-wrap items-center justify-between gap-3"
-                        >
-                          <div className="min-w-0">
-                            <p className="font-medium">{signup.name}</p>
-                            <p className="break-all text-sm text-gray-600">
+                        <li key={signup.id} className="signup-row">
+                          <div>
+                            <p className="signup-name">{signup.name}</p>
+                            <p className="signup-email">
                               {signup.email}
                             </p>
                           </div>
-                          <label className="flex shrink-0 items-center gap-2">
+                          <label className="attendance-label">
                             <input
                               type="checkbox"
                               checked={signup.attended}
@@ -325,14 +319,14 @@ export default function AdminEvents({
                                   event.id,
                                 )
                               }
-                              className="size-5"
+                              className="attendance-checkbox"
                             />
                             Attended
                           </label>
                           {signupErrors[signup.id] && (
                             <p
                               role="alert"
-                              className="w-full text-sm text-red-700"
+                              className="feedback-error"
                             >
                               Unable to update attendance:{" "}
                               {signupErrors[signup.id]}
