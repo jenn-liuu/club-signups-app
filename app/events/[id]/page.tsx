@@ -57,14 +57,11 @@ export default async function EventPage({ params }: EventPageProps) {
 
   if (loadError) {
     return (
-      <main className="mx-auto min-h-screen max-w-2xl px-4 py-8 sm:py-12">
-        <Link href="/" className="font-medium text-blue-700 hover:underline">
+      <main className="page-shell">
+        <Link href="/" className="text-link">
           ← All events
         </Link>
-        <p
-          role="alert"
-          className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800"
-        >
+        <p role="alert" className="state-card state-card--error page-spacer">
           {loadError}
         </p>
       </main>
@@ -76,35 +73,35 @@ export default async function EventPage({ params }: EventPageProps) {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-2xl px-4 py-8 sm:py-12">
-      <Link href="/" className="font-medium text-blue-700 hover:underline">
+    <main className="page-shell">
+      <Link href="/" className="text-link">
         ← All events
       </Link>
 
-      <article className="mt-6">
+      <article className="page-spacer">
         <header>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-950">
+          <h1 className="page-title">
             {event.title}
           </h1>
-          <p className="mt-4 text-lg text-gray-700">
+          <p className="event-meta">
             {eventDateFormatter.format(new Date(event.date))}
           </p>
           {event.location && (
-            <p className="mt-1 text-gray-600">{event.location}</p>
+            <p className="event-meta">{event.location}</p>
           )}
         </header>
 
         {event.description && (
-          <p className="mt-6 whitespace-pre-wrap leading-7 text-gray-700">
+          <p className="event-description">
             {event.description}
           </p>
         )}
 
         <section
           aria-labelledby="signup-heading"
-          className="mt-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6"
+          className="panel page-spacer"
         >
-          <h2 id="signup-heading" className="mb-5 text-xl font-semibold">
+          <h2 id="signup-heading" className="panel-heading">
             Save your spot
           </h2>
           <SignupForm eventId={event.id} />

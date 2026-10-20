@@ -35,12 +35,12 @@ export default function LoginForm() {
       setIsSubmitting(false);
     }
   }
-
+  
   return (
-    <div className="mt-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="page-spacer">
+      <form onSubmit={handleSubmit} className="form-stack">
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm font-medium">
+          <label htmlFor="email" className="field-label">
             Email
           </label>
           <input
@@ -51,12 +51,12 @@ export default function LoginForm() {
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5"
+            className="field-input"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-1 block text-sm font-medium">
+          <label htmlFor="password" className="field-label">
             Password
           </label>
           <input
@@ -67,19 +67,20 @@ export default function LoginForm() {
             required
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5"
+            className="field-input"
           />
         </div>
 
         {error && (
-          <p role="alert" className="text-sm text-red-700">
+          <p role="alert" className="feedback-error">
             {error}
           </p>
         )}
+
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-lg bg-blue-700 px-4 py-3 font-semibold text-white disabled:opacity-60"
+          className="primary-button"
         >
           {isSubmitting ? "Please wait..." : "Sign in"}
         </button>
@@ -87,3 +88,4 @@ export default function LoginForm() {
     </div>
   );
 }
+  

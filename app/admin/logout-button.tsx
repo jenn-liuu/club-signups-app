@@ -32,17 +32,17 @@ export default function LogoutButton() {
   }
 
   return (
-    <div className="shrink-0 text-right">
+    <div>
       <button
         type="button"
         onClick={handleLogout}
         disabled={isLoggingOut}
-        className="rounded-lg border border-gray-300 px-4 py-2 font-medium disabled:opacity-60"
+        className="secondary-button"
       >
         {isLoggingOut ? "Signing out..." : "Log out"}
       </button>
       {error && (
-        <p role="alert" className="mt-2 max-w-48 text-sm text-red-700">
+        <p role="alert" className="feedback-error page-spacer">
           {error}
         </p>
       )}
