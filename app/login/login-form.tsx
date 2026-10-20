@@ -4,37 +4,24 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type AuthMode = "sign-in" | "sign-up";
-
 export default function LoginForm() {
   const router = useRouter();
-  const [mode, setMode] = useState<AuthMode>("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setMessage("");
     setIsSubmitting(true);
 
     try {
       const supabase = createClient();
-      const result =
-        mode === "sign-in"
-          ? await supabase.auth.signInWithPassword({ email, password })
-          : await supabase.auth.signUp({ email, password });
+      const result = await supabase.auth.signInWithPassword({ email, password });
 
       if (result.error) {
         setError(result.error.message);
-        return;
-      }
-
-      if (mode === "sign-up" && !result.data.session) {
-        setMessage("Check your email for a confirmation link to finish signing up.");
         return;
       }
 
@@ -48,34 +35,9 @@ export default function LoginForm() {
       setIsSubmitting(false);
     }
   }
-
-  function changeMode(nextMode: AuthMode) {
-    setMode(nextMode);
-    setError("");
-    setMessage("");
-  }
-
+  
   return (
     <div className="page-spacer">
-      <div className="mode-switch">
-        <button
-          type="button"
-          aria-pressed={mode === "sign-in"}
-          onClick={() => changeMode("sign-in")}
-          className="mode-button"
-        >
-          Sign in
-        </button>
-        <button
-          type="button"
-          aria-pressed={mode === "sign-up"}
-          onClick={() => changeMode("sign-up")}
-          className="mode-button"
-        >
-          Sign up
-        </button>
-      </div>
-
       <form onSubmit={handleSubmit} className="form-stack">
         <div>
           <label htmlFor="email" className="field-label">
@@ -101,9 +63,7 @@ export default function LoginForm() {
             id="password"
             name="password"
             type="password"
-            autoComplete={
-              mode === "sign-in" ? "current-password" : "new-password"
-            }
+            autoComplete="current-password"
             required
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -116,24 +76,16 @@ export default function LoginForm() {
             {error}
           </p>
         )}
-        {message && (
-          <p role="status" className="feedback-success">
-            {message}
-          </p>
-        )}
 
         <button
           type="submit"
           disabled={isSubmitting}
           className="primary-button"
         >
-          {isSubmitting
-            ? "Please wait..."
-            : mode === "sign-in"
-              ? "Sign in"
-              : "Create account"}
+          {isSubmitting ? "Please wait..." : "Sign in"}
         </button>
       </form>
     </div>
   );
 }
+  

@@ -7,7 +7,7 @@ export default function LoginPage() {
         <p className="eyebrow">Club officers</p>
         <h1 className="page-title">Officer login</h1>
         <p className="account-note">
-          Sign in or create an officer account to manage club events.
+          Sign in with your provisioned officer account to manage club events.
         </p>
         <LoginForm />
       </section>

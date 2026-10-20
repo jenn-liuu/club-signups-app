@@ -21,27 +21,51 @@ create table signups (
 alter table events enable row level security;
 alter table signups enable row level security;
 
--- events: anyone reads; only the owner writes
+-- events: anyone reads; only an officer who owns the event can write
 create policy "events are public" on events
   for select using (true);
-create policy "owners create events" on events
-  for insert to authenticated with check (owner_id = auth.uid());
-create policy "owners update events" on events
+create policy "officers create events" on events
+  for insert to authenticated
+  with check (
+    owner_id = auth.uid()
+    and (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+  );
+create policy "officers update events" on events
   for update to authenticated
-  using (owner_id = auth.uid()) with check (owner_id = auth.uid());
-create policy "owners delete events" on events
-  for delete to authenticated using (owner_id = auth.uid());
+  using (
+    owner_id = auth.uid()
+    and (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+  )
+  with check (
+    owner_id = auth.uid()
+    and (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+  );
+create policy "officers delete events" on events
+  for delete to authenticated
+  using (
+    owner_id = auth.uid()
+    and (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+  );
 
--- signups: anyone can add one; only the event owner can see or change them
+-- signups: anyone can add one; only an officer who owns the event can see or change them
 create policy "anyone can sign up" on signups
   for insert to anon, authenticated with check (attended = false);
-create policy "owners read signups" on signups
+create policy "officers read signups" on signups
   for select to authenticated
-  using (exists (select 1 from events e
-                 where e.id = signups.event_id and e.owner_id = auth.uid()));
-create policy "owners update signups" on signups
+  using (
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+    and exists (select 1 from events e
+                where e.id = signups.event_id and e.owner_id = auth.uid())
+  );
+create policy "officers update signups" on signups
   for update to authenticated
-  using (exists (select 1 from events e
-                 where e.id = signups.event_id and e.owner_id = auth.uid()))
-  with check (exists (select 1 from events e
-                 where e.id = signups.event_id and e.owner_id = auth.uid()));
+  using (
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+    and exists (select 1 from events e
+                where e.id = signups.event_id and e.owner_id = auth.uid())
+  )
+  with check (
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'officer'
+    and exists (select 1 from events e
+                where e.id = signups.event_id and e.owner_id = auth.uid())
+  );
