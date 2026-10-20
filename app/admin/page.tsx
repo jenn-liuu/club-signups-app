@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { isUnauthenticatedError } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./logout-button";
+import AdminEvents, { type AdminEvent } from "./admin-events";
 
 export const instant = false;
 
@@ -27,6 +28,36 @@ export default async function AdminPage() {
     redirect("/login");
   }
 
+  const { data: events, error: eventsError } = await supabase
+    .from("events")
+    .select(
+      "id, title, date, location, description, signups(id, name, email, attended)",
+    )
+    .eq("owner_id", user.id)
+    .order("date", { ascending: true });
+
+  if (eventsError) {
+    return (
+      <main className="mx-auto max-w-xl px-4 py-10">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Officer dashboard
+            </h1>
+            <p className="mt-3 text-gray-600">
+              Signed in as{" "}
+              <span className="font-medium text-gray-900">{user.email}</span>
+            </p>
+          </div>
+          <LogoutButton />
+        </div>
+        <p role="alert" className="mt-6 text-red-700">
+          Unable to load your events: {eventsError.message}
+        </p>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto max-w-xl px-4 py-10">
       <div className="flex items-start justify-between gap-4">
@@ -40,12 +71,7 @@ export default async function AdminPage() {
         </div>
         <LogoutButton />
       </div>
-      <section className="mt-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold">Event management</h2>
-        <p className="mt-2 text-gray-600">
-          Event management tools will appear here.
-        </p>
-      </section>
+      <AdminEvents initialEvents={events as AdminEvent[]} />
     </main>
   );
 }
